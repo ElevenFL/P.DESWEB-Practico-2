@@ -1,0 +1,39 @@
+<!-- frontend.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Gestor de Tareas</title>
+</head>
+<body>
+    <h1>Agregar Nueva Tarea</h1>
+    <form id="taskForm">
+        <input type="text" id="taskInput" placeholder="Nombre de la tarea" required>
+        <button type="submit">Agregar</button>
+    </form>
+    <div id="responseMessage"></div>
+
+    <script>
+        document.getElementById('taskForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const taskName = document.getElementById('taskInput').value;
+            
+            try {
+                const response = await fetch('http://localhost:3000/tasks', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ task: taskName })
+                });
+                
+                const data = await response.json();
+                document.getElementById('responseMessage').textContent = data.message;
+                document.getElementById('taskInput').value = ''; // Limpiar campo
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('responseMessage').textContent = 'Error al conectar con el servidor';
+            }
+        });
+    </script>
+</body>
+</html>
